@@ -153,8 +153,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ---
 
 ## 🛡 License
-This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for details.
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.  
 
----
+You are free to use, modify, and share this project **for non-commercial purposes only**, with proper attribution.  
+Commercial use of this code is **strictly prohibited**.
 
+Full license: [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
 
