@@ -39,10 +39,21 @@ The **NSU Campus AI Assistant** solves these problems by:
 | Complex jargon causes confusion. | 🧠 Simplified explanations in natural language |
 | Long wait times for support staff. | 🤖 24/7 automated assistance |
 
+
+
 ---
 
+
+
+
+https://github.com/user-attachments/assets/5b50793a-6b1c-49e7-a311-70dc0396e188
+
+
+
+
+
 ## 🧠 System Overview
-![System Architecture](docs/system-architecture.png)
+
 
 The project integrates **advanced AI techniques** to deliver a seamless experience:
 - **Retrieval-Augmented Generation (RAG)**  
@@ -117,13 +128,78 @@ streamlit run app.py
 
 ---
 
+
 ## 📊 Evaluation Metrics
 The project was tested on 12 representative queries.  
 **BLEU Score Range:** 0.294 – 0.846 (average: 0.633)
 
-![BLEU Score Graph](docs/bleu-score.png)
+![BLEU Score Graph](https://i.imgur.com/QUxWWnP.png)
+
+
+
+## 🧪 Evaluation & Methodology (from `evaluate.py`)
+This repository includes an evaluation harness that checks the chatbot’s factual accuracy against a curated test set of SEPS questions.
+
+### Pipeline Summary
+1. **PDF Loading & Caching**
+   - Loads all PDFs in `./pdfs` and caches parsed text to `pdfs/pdf_data.json` to avoid reprocessing on subsequent runs.
+   - Uses **PyMuPDF (`fitz`)** for robust text extraction across pages.
+
+2. **Chunking & Embeddings**
+   - Splits each document into chunks (≈5,000 chars max).
+   - Encodes chunks with **Sentence Transformers** model **`bge-small-en-v1.5`** to produce dense vectors.
+
+3. **Vector Index**
+   - Builds a **FAISS `IndexFlatL2`** index over all chunk embeddings for fast semantic lookup.
+
+4. **Context Retrieval**
+   - For a given query, retrieves the **top-2** most relevant chunks via FAISS search and concatenates them as the **retrieved context**.
+
+5. **LLM Answering**
+   - Crafts a **system prompt** instructing the model to answer **only from retrieved context** (otherwise admit uncertainty).
+   - Calls **Ollama** with **`deepseek-r1:1.5b`** using configurable options (temperature, top-p, max tokens).
+
+6. **Automatic Scoring**
+   - For each test item, computes cosine similarity between:
+     - the **expected answer** embedding and
+     - the **model’s response** embedding
+   - Marks the item **correct** if similarity **> 0.85**.
+
+7. **Report Generation (Streamlit Sidebar)**
+   - Click **📊 Generate Accuracy Report** to:
+     - run the full test set,
+     - view a pretty **text report** in the app, and
+     - **download** it as `chatbot_accuracy_report_YYYYMMDD_HHMMSS.txt`.
+
+### Key Files & Where to Look
+- **`evaluate.py`**
+  - `load_all_pdfs(...)` – caching & refresh logic
+  - `split_text(...)` – chunking strategy
+  - `build_vector_store(...)` – embeddings + FAISS index
+  - `retrieve_context(...)` – top-k retrieval (k=2)
+  - `TEST_SET` – 12 ground-truth Q&A pairs (mirrors the report’s table)
+  - `evaluate_accuracy(...)` – end-to-end loop (retrieval → LLM → similarity score)
+  - `generate_report(...)` – aggregate accuracy, per-item details
+  - Streamlit **sidebar**: reload PDFs & generate report
+
+### Run the Evaluation
+```bash
+# Ensure PDFs are present:
+#  - Put your SEPS PDFs in ./pdfs
+#  - First run will build pdfs/pdf_data.json
+
+streamlit run evaluate.py
+```
+
+### Interpreting Scores
+- **Similarity > 0.85:** counted as **correct**
+- Use the report to spot:
+  - queries that need **richer context** (add PDFs or refine chunking),
+  - retrieval misses (consider **top_k** or chunk size),
+  - prompt tweaks for tighter grounding.
 
 ---
+
 
 ## 📅 Project Timeline
 | Phase | Description | Weeks |
@@ -145,12 +221,9 @@ The project was tested on 12 representative queries.
 - Expanded coverage for other NSU departments  
 
 ---
-
-## 🤝 Contributing
-Contributions are welcome!  
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
----
+## 📚 Project Report & Slides
+- **Final Report (PDF):** `docs/Final Presentation Deepseek r1 Model.pptx`
+- **Final Presentation (PPTX):** `docs/Final Report NSU Campus AI assistant Deepseek 1.5M.pdf`
 
 ## 🛡 License
 This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.  
