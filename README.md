@@ -222,9 +222,11 @@ streamlit run evaluate.py
 
 ---
 ## 📚 Project Report & Slides
-- **Final Report (PDF):** `docs/Final Presentation Deepseek r1 Model.pptx`
-- **Final Presentation (PPTX):** `docs/Final Report NSU Campus AI assistant Deepseek 1.5M.pdf`
 
+- [**Final Report (PDF)**](docs/Final%20Report%20NSU%20Campus%20AI%20assistant%20Deepseek%201.5M.pdf)
+- [**Final Presentation (PPTX)**](docs/Final%20Presentation%20Deepseek%20r1%20Model.pptx)
+
+---
 ## 🛡 License
 This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.  
 
